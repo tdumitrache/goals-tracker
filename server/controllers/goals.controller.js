@@ -1,14 +1,16 @@
 const asyncHandler = require('express-async-handler');
 
-const Goal = require('../models/goal.models');
+const Goal = require('../models/goals.model');
 
 // @route GET /goals
 // @desc  Gets all the goals
 // @access PRIVATE
 
 const getGoals = asyncHandler(async (req, res) => {
-  const goals = await Goal.find({});
+  const { _id } = req.user;
 
+  const goals = await Goal.find({ userId: _id });
+  
   res.status(200).json(goals);
 });
 
@@ -18,6 +20,7 @@ const getGoals = asyncHandler(async (req, res) => {
 
 const addGoal = asyncHandler(async (req, res) => {
   const { text } = req.body;
+  const { _id } = req.user;
 
   if (!text) {
     res.status(400);
@@ -27,6 +30,7 @@ const addGoal = asyncHandler(async (req, res) => {
 
   const newGoal = await Goal.create({
     text,
+    userId: _id,
   });
 
   res.status(201).json(newGoal);
@@ -39,7 +43,7 @@ const addGoal = asyncHandler(async (req, res) => {
 const updateGoal = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const goal = await Goal.findById(id);
+  const goal = await Goal.find(id);
 
   if (!goal) {
     res.status(404);

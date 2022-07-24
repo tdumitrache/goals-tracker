@@ -2,10 +2,11 @@ const express = require('express');
 
 const connectDB = require('./config/db');
 
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 
 const { errorHandler } = require('./middleware/error.middleware');
 const goalsRouter = require('./routes/goals.router');
+const usersRouter = require('./routes/users.router');
 
 const PORT = process.env.PORT || 5000;
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/goals', goalsRouter);
+app.use('/api/users', usersRouter);
 
 app.use(errorHandler); // Overrides the default express error middleware
 
