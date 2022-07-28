@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 const connectDB = require('./config/db');
 
@@ -19,6 +20,18 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/goals', goalsRouter);
 app.use('/api/users', usersRouter);
+
+// Server frontend
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, '../client/build/index.html'))
+  );
+} else {
+  app.get('/', (req, res) => res.send('Please switch to production!'));
+}
 
 app.use(errorHandler); // Overrides the default express error middleware
 
